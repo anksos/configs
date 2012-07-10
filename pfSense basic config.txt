@@ -14,12 +14,14 @@
 
 7) System -> Routing -> Routes -> add routes for the managed networks that we want to have access to pfSense's WebGUI
 
-8) System -> General Setup -> DNS Server -> uncheck "Allow DNS Server to be overwritten.." & check "Do not use the DNS..."
+8) System -> General Setup -> DNS Server:8.8.8.8
 
-9) Firewall -> NAT -> Outbound -> Radio button Manual, add mapping rule to the WAN interface with source the WAN IP of the firewall
+9) System -> General Setup -> DNS Server -> uncheck "Allow DNS Server to be overwritten.." & check "Do not use the DNS..."
+
+10) Firewall -> NAT -> Outbound -> Radio button Manual, add mapping rule to the WAN interface with source the WAN IP of the firewall
    and with Destination any, and NAT Address the NAT IP of the firewall
 
-10) Firewall -> Rules -> Managed interface -> add rule "tcp port 80" and all the other any
+11) Firewall -> Rules -> Managed interface -> add rule "tcp port 80" and all the other any
 
-11) Firewall -> Rules -> WAN (edit) -> Pass, WAN, TCP, Source:Any, Destination:Any, Destination port range:HTTP (both),
+12) Firewall -> Rules -> WAN (edit) -> Pass, WAN, TCP, Source:Any, Destination:Any, Destination port range:HTTP (both),
     Log (check), Description:HTTP Server
