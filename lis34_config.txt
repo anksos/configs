@@ -1,0 +1,92 @@
+Linux Integration Services are responsible for Windows Hyper-V 2008 and 2008 R2 to make Linux Virtual Machines work operational normally (Windows Server 2012 and Windows Server 2012 R2 have built in the LIS). They make work properly a lot of things such as Networking, Cluster (heartbeat failovers), Time out failovers, Storage migrations and QSMs (Quick Storage Migrations) etc.
+
+In this tutorial i will saw you how to upgrade LIS (Linux Integration Services) on CentOS 6.2 or 6.3 (not 6.4 because they already have the latest LIS).
+
+1. First of all you have to find first your exhisting LIS that you have installed because before the upgrade you have to uninstall the exhistings.
+
+# rpm -qa | grep microsoft 
+
+you will take an output like this (differences may causes because of different versions on LIS):
+
+microsoft-hyper-v-rhel6-43.1 
+
+kmod-microsoft-hyper-v-rhel6-43.1
+
+
+2. Next you have to uninstall this packages:
+
+# rpm -e microsoft-hyper-v-rhel6-43.1 kmod-microsoft-hyper-v-rhel6-43.1
+
+
+3. After the uninstall completed you have to shutdown the VM
+
+# shutdown -h now
+
+
+4. Then you have to mount the ISO with the 3.4 LIS (you can find the ISO here!)
+
+a) Open Hyper-V manager: Click Start, point to Administrative Tools, and then click Hyper-V Manager
+
+b) Mount the ISO to the IDE Controller of your Virtual Machine
+
+
+5. Start Virtual Machine: Right click -> Start
+
+
+6. Login as root
+
+
+7. Now you have to mount the ISO
+
+# mount /dev/cdrom /media
+
+
+8. Next you have to change directory to start the installation
+
+# cd /media/RHEL6012 or cd /media/RHEL63 (depends on the version of CentOS that you have installed)
+
+
+9. Run the installation script
+
+# ./install.sh
+
+
+10. If everything completed without an error reboot the VM
+
+# shutdown -r now
+
+Check that everything works properly:
+
+11. # ping google.com (first of all to see that everything in network adapters works properly because in previous versions of LIS we have see that we lose the config of the Network Adapters in unexpected shutdowns or failovers through the cluster
+
+
+12. # /sbin/modinfo hv_vmbus (with this command we must take as an output something like this)
+
+filename:       /lib/modules/2.6.32-220.el6.x86_64/weak-updates/microsoft-hyper-v/hv_vmbus.ko
+version:        3.4
+license:        GPL
+srcversion:     2865A5C1D4FDEDEDDDB3296
+alias:          acpi*:VMBus:*
+alias:          acpi*:VMBUS:*
+depends:
+vermagic:       2.6.32-71.el6.x86_64 SMP mod_unload modversions
+
+
+13. # /sbin/lsmod | grep hv (also a check if you have a look alike output like the above)
+
+hv_utils                6085  0
+hv_netvsc              23141  0
+hv_timesource           1079  0 [permanent]
+hv_storvsc             10372  2
+hv_vmbus               93781  5 hid_hyperv,hv_utils,hv_netvsc,hv_timesource,hv_storvsc
+
+
+If all of the above are ok then your upgrade to 3.4 Linux Integration Services gone well.
+
+
+For informations/questions/or anything you want leave comments.
+
+See you folks.
+
+
+ 
